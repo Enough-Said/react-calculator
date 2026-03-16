@@ -5,8 +5,21 @@ import {
 } from "react"; 
 
 function App() {
+  
+  const buttons = [
+    [7, 8, 9, "+"],
+    [4, 5, 6, "-"],
+    [1, 2, 3, "x"],
+    [0, ".", "=", "/"],
+    ["CLEAR", "RESET"],
+  ]
+
   const inputRef = useRef(null); 
   const resultRef = useRef(null); 
+
+
+
+  const [input, setInput] = useState(""); 
   const [result, setResult] = useState(0); 
  
   function plus(e) { 
@@ -39,26 +52,69 @@ function App() {
     setResult(0); 
   }; 
  
+  function handleClick(btn) {
+    switch (btn) {
+      case "CLEAR":
+        setInput('');
+        break;
+  
+      case "RESET":
+        setResult(0); 
+        setInput('');
+        break;
+
+      case "+":
+        setResult((result) => result + Number(input));
+        setInput('');
+        break;
+
+      case "-":
+        setResult((result) => result - Number(input)); 
+        setInput('');
+        break;
+
+      case "/":
+        setResult((result) => result / Number(input)); 
+        setInput('');
+        break;
+
+      case "x":
+        setResult((result) => result * Number(input)); 
+        setInput('');
+        break;
+
+      case "=":
+        setInput('');
+        break;
+
+      default:
+        setInput(input + btn);
+        break;
+    }
+  }
+
   return ( 
     <div className="App"> 
       <div> 
-        <h1>Simplest Working Calculator</h1> 
+        <h1>Simple Working Calculator</h1> 
       </div> 
-      <form> 
-        <p ref={resultRef}> {result} </p> 
-        <input
-          pattern="[0-9]" 
-          ref={inputRef} 
-          type="number" 
-          placeholder="Type a number" 
-        /> 
-        <button onClick={plus}>add</button> 
-        <button onClick={minus}>subtract</button> 
-        <button onClick={times}>multiply</button> 
-        <button onClick={divide}>divide</button> 
-        <button onClick={resetInput}>clear</button> 
-        <button onClick={resetResult}>reset</button> 
-      </form> 
+
+      <div ref={resultRef}> {result} </div>
+
+      <div> {input} </div>
+
+      <div className="buttons">
+        {buttons.map( (row, rowIndex) => { return (
+
+          <div key={rowIndex} className="button-row">
+            {row.map( (btn, btnIndex) => { return (
+              <button key={btnIndex} onClick={() => handleClick(btn)}> {btn} </button>
+            )})}
+          </div>
+
+        )})}
+      </div>
+
     </div> 
   ); 
 } 
