@@ -1,59 +1,29 @@
+import { useState, useRef } from "react"; 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import {
-  useState,
-  useRef
-} from "react"; 
 
 function App() {
   
+  // Map of buttons, containing symbol/text contained in each
   const buttons = [
     [7, 8, 9, "+"],
     [4, 5, 6, "-"],
     [1, 2, 3, "x"],
     [0, ".", "=", "/"],
-    ["CLEAR", "RESET"],
+    ["ANS", "CLEAR", "RESET"],
   ]
-
-  const inputRef = useRef(null); 
-  const resultRef = useRef(null); 
-
-
 
   const [input, setInput] = useState(""); 
   const [result, setResult] = useState(0); 
+  const inputRef = useRef(null);
  
-  function plus(e) { 
-    e.preventDefault(); 
-    setResult((result) => result + Number(inputRef.current.value)); 
-  }; 
- 
-  function minus(e) { 
-  	e.preventDefault(); 
-    setResult((result) => result - Number(inputRef.current.value)); 
-  };
- 
-  function times(e) { 
-    e.preventDefault(); 
-    setResult((result) => result * Number(inputRef.current.value)); 
-  }; 
- 
-  function divide(e) { 
-    e.preventDefault(); 
-    setResult((result) => result / Number(inputRef.current.value)); 
-  };
- 
-  function resetInput(e) { 
-    e.preventDefault(); 
-    inputRef.current.value = '';
-  }; 
- 
-  function resetResult(e) { 
-  	e.preventDefault(); 
-    setResult(0); 
-  }; 
- 
+  // Handle button presses on the calculator UI
   function handleClick(btn) {
     switch (btn) {
+      case "ANS":
+        setInput(input + result);
+        break;
+
       case "CLEAR":
         setInput('');
         break;
@@ -63,27 +33,12 @@ function App() {
         setInput('');
         break;
 
-      case "+":
-        setResult((result) => result + Number(input));
-        setInput('');
-        break;
-
-      case "-":
-        setResult((result) => result - Number(input)); 
-        setInput('');
-        break;
-
-      case "/":
-        setResult((result) => result / Number(input)); 
-        setInput('');
-        break;
-
       case "x":
-        setResult((result) => result * Number(input)); 
-        setInput('');
-        break;
+      setInput(input + '*')
+      break;
 
       case "=":
+        setResult(() => eval(input))
         setInput('');
         break;
 
@@ -93,22 +48,41 @@ function App() {
     }
   }
 
+  // Return components
   return ( 
     <div className="App"> 
-      <div> 
-        <h1>Simple Working Calculator</h1> 
+      <div className='justify-content-center title'> 
+        <h1 className="text-center">A Calculator</h1> 
       </div> 
 
-      <div ref={resultRef}> {result} </div>
+      <div class="form-floating mb-1 ">
+        <input 
+          type='text'   
+          id="specialInput" 
+          ref={inputRef}
+          className="text-start form-control border-blue" 
+          value={input}
+          onChange={(e) => setInput(e.target.value.replace(/[^0-9+\-*/.]/g, ''))}
+          onBlur={() => inputRef.current.focus()}
+          autoFocus
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === "=") {handleClick("=")} 
+          }}
+        />
 
-      <div> {input} </div>
+        <label for="floatingInput" className="text-blue fs-9"> {result} </label>
+      </div>
+
 
       <div className="buttons">
         {buttons.map( (row, rowIndex) => { return (
 
-          <div key={rowIndex} className="button-row">
-            {row.map( (btn, btnIndex) => { return (
-              <button key={btnIndex} onClick={() => handleClick(btn)}> {btn} </button>
+          <div id={rowIndex} className="justify-content-left">
+            {row.map( (btn) => { return (
+              <button 
+                onClick={() => handleClick(btn)} 
+                className="btn"> 
+              {btn} </button>
             )})}
           </div>
 
