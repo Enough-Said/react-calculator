@@ -21,7 +21,11 @@ function App() {
   function handleClick(btn) {
     switch (btn) {
       case "ANS":
-        setInput(input + result);
+        console.log(result)
+        console.log(/[^0-9+\-*/.eE]/.test(result))
+        if (!/[^0-9+\-*/.eE]/.test(result)) {
+          setInput(input + result);
+        }
         break;
 
       case "CLEAR":
@@ -62,7 +66,7 @@ function App() {
           ref={inputRef}
           className="text-start form-control border-blue" 
           value={input}
-          onChange={(e) => setInput(e.target.value.replace(/[^0-9+\-*/.]/g, ''))}
+          onChange={(e) => setInput(e.target.value.replace(/[^0-9+\-*/.eE]/g, ''))}
           onBlur={() => inputRef.current.focus()}
           autoFocus
           onKeyDown={(e) => {
